@@ -1,0 +1,104 @@
+CSS calc()函数可以和<lenght>、<frequency>、<angle>、<time>、<number>或<integer>一起使用，它可以执行+、-、*和/等数学运算，并将计算结果和前面提到的测量单位组合为一个新的CSS属性值。
+calc()对于计算相对值特别有用，例如相对宽度和相对高度。举例来说，要使用calc()来设置一个元素的宽度，使该元素是它的父元素宽度的100% - 50% / 3宽，可以这样写CSS规则：
+.el {
+    width: calc(100% - 50% / 3);
+}                              
+下面的CSS规则表示一个元素的左边距是它的宽度的10%加上10像素。
+.el {
+    margin-left: calc(10% + 10px);
+}                              
+calc()表达式代表一个数学计算的结果，它使用标准的优先级规则。表达式会从左向右进行计算，乘除优先于加减，如果带有括号的将优先计算。下面是calc()表达式的一些注意事项：
++和-操作符的两边都需要带上空格符（*和/操作符不需要）。例如：calc(50% -10px)是无效的，因为它会被认为是一个百分比数后面跟着一个负数，而不是一个表达式。
+calc()可以由字面值、attr()或calc()（可以嵌套calc()函数）或<percentage>组成。
+不同单位类型的的值不能再同一个calc()表达式中使用。例如calc(5px - 5px + 10s)或calc(0 * 5px + 10s)都是错误的，因为表达式中使用一个长度单位和一个时间单位相加。
+ calc()的语法
+<calc()> = calc( <calc-sum> )
+<calc-sum> = <calc-product> [ [ '+' | '-' ] <calc-product> ]*
+<calc-product> = <calc-value> [ '*' <calc-value> | '/' <number> ]*
+<calc-value> = <number> | <dimension> | <percentage> | ( <calc-sum> )                              
+<dimension>是一个带单位的数字。它用于指定距离（<lenght>）、持续时间（<time>）、频率（<frequency>）、分辨率（<resolution>）和其它一些标量。
+ 应用举例
+下面是一个在容器中放置7张图片的小例子：
+<section>
+  <img src="img/calc-img.jpg">
+  <img src="img/calc-img.jpg">
+  <img src="img/calc-img.jpg">
+  <img src="img/calc-img.jpg">
+  <img src="img/calc-img.jpg">
+  <img src="img/calc-img.jpg">
+  <img src="img/calc-img.jpg">
+</section>                             
+CSS代码如下：
+img {
+  float: left;
+  width: calc(25% - 20px);
+  margin: 10px;
+}                              
+
+上面的代码使每一张图片的宽度都被设置为它的父元素宽度的25%减去20px。减去20像素是为了在各张图片之间留下一些间隙。每张图片都带有10像素的margin值。
+ 更复杂的响应式设计方案
+我们可以使用另一种不同的写法来的到和上面相同的结果。
+width: calc(100% * 1/4 - 20px);                              
+CSS代码如下：
+img {
+  float: left;
+  margin: 10px;
+  width: calc(100% * 1 / 4 - 20px);
+}
+@media (max-width: 900px) {
+  img {
+    width: calc(100% * 1 / 3 - 20px);
+  }
+}
+@media (max-width: 600px) {
+  img {
+    width: calc(100% * 1 / 2 - 20px);
+  }
+}
+@media (max-width: 400px) {
+  img {
+    width: calc(100% - 20px);
+  }
+}                              
+我们还可以使用媒体查询来为不同屏幕分辨率设置每行不同的图片数量。
+
+缩放你的浏览器来看看上面两种不同写法的结果，以及使用媒体查询后的显示结果。
+ 更多的例子
+由于calc()函数可以使用任何的长度单位，下面的使用方法都是正确的。
+设置一个段落的margin值：
+p {
+  margin: calc(1rem - 2px) calc(1rem - 1px);
+}
+下面的表达式会在渐变上放置一个距离两端距离都相等的color-stops：
+.foo {
+  background-image: linear-gradient(to right, silver,
+                                              white 50px,
+                                              white calc(100% - 50px),
+                                              silver);
+}
+下面的表达式会将视口中的字体大小设置为“40em”，确保不论屏幕大小如何变化，相等数量的文字总是会填满整个屏幕视口。
+:root {
+    font-size: calc(100vw / 40);
+}
+下面的表达式设置一个元素相对于屏幕视口的行高：
+h1 {
+  font: 3em / calc(100vh - 1em) "Lora", sans-serif;  
+}
+calc()与百分比值结合，可以创建强大的网格系统。它可以非常容易的计算出宽度、margins和paddings等值。例如，制作一个6列的网格系统，可以使用下面的表达式：
+.col-1-6 { /* 1/6的宽度 */
+    width: 16.66%
+}
+.col-5-6 { /* 5/6的宽度 */
+    width: 83.333%;
+}
+上面的代码是非常直观的，一眼就可以看出这个网格系统有多少列。使用calc()可以将上面的代码替换为：
+.col-1-6 {
+    width: calc(100% / 6);
+}
+.col-5-6 { 
+    width: calc(100% / 6 * 5);
+}
+ 浏览器支持
+IE9在使用display:table时会忽略calc()。更可怕的是在IE9的background-position属性中使用calc()会照成浏览器的崩溃。
+浏览器对calc函数的支持
+完整的浏览器支持calc()函数列表请参考：http://caniuse.com/#feat=calc。
